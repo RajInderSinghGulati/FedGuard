@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: fedguard-db
+    environment:
+      POSTGRES_DB: fedguard
+      POSTGRES_USER: fedguard
+      POSTGRES_PASSWORD: fedguard2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fedguard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./Backend/server
+    container_name: fedguard-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/fedguard
+      SPRING_DATASOURCE_USERNAME: fedguard
+      SPRING_DATASOURCE_PASSWORD: fedguard2026
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build: ./dashboard
+    container_name: fedguard-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  # fl-client-1:
+  #   build: ./Model
+  #   container_name: fedguard-client-1
+  #   command: ["client-1"]
+  #   depends_on:
+  #     backend:
+  #       condition: service_healthy
+  #   environment:
+  #     SERVER: http://backend:8080/api
+
+  # fl-client-2:
+  #   build: ./Model
+  #   container_name: fedguard-client-2
+  #   command: ["client-2"]
+  #   depends_on:
+  #     backend:
+  #       condition: service_healthy
+  #   environment:
+  #     SERVER: http://backend:8080/api
+
+volumes:
+  pgdata:
