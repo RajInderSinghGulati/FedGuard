@@ -43,25 +43,25 @@ services:
     depends_on:
       - backend
 
-  # fl-client-1:
-  #   build: ./Model
-  #   container_name: fedguard-client-1
-  #   command: ["client-1"]
-  #   depends_on:
-  #     backend:
-  #       condition: service_healthy
-  #   environment:
-  #     SERVER: http://backend:8080/api
+  fl-client-1:
+    build: ./Model
+    container_name: fedguard-client-1
+    command: ["client-1"]
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      SERVER: http://backend:8080/api
 
-  # fl-client-2:
-  #   build: ./Model
-  #   container_name: fedguard-client-2
-  #   command: ["client-2"]
-  #   depends_on:
-  #     backend:
-  #       condition: service_healthy
-  #   environment:
-  #     SERVER: http://backend:8080/api
+  fl-client-2:
+    build: ./Model
+    container_name: fedguard-client-2
+    command: ["client-2"]
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      SERVER: http://backend:8080/api
 
 volumes:
   pgdata:
