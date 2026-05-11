@@ -239,8 +239,3 @@ The `notebooks/ecc_crypto.ipynb` implements cryptographic primitives from scratc
 
 MIT License — see [LICENSE](LICENSE) for details.
 
----
-
-## Author
-
-Built by a Computer Science student at VIT Vellore as a research project in privacy-preserving machine learning and applied cryptography.
